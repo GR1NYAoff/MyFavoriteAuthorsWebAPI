@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyFavoriteAuthorsWebService.Configuration;
 using MyFavoriteAuthorsWebService.Data;
+using MyFavoriteAuthorsWebService.Interfaces;
+using MyFavoriteAuthorsWebService.Services;
 using Swashbuckle.AspNetCore.Filters;
 
 
@@ -27,6 +29,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection"))
             );
+
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // TODO: Enable CORSE
 
