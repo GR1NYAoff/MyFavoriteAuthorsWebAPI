@@ -7,7 +7,7 @@ using MyFavoriteAuthorsWebService.Interfaces;
 using MyFavoriteAuthorsWebService.Services;
 using Swashbuckle.AspNetCore.Filters;
 
-
+const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -32,7 +32,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 
-// TODO: Enable CORSE
+// Enable CORSE
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins, builder =>
+    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
 
 var authOptionsConfiguration = builder.Configuration.GetSection("Auth");
 builder.Services.Configure<AuthOptions>(authOptionsConfiguration);
@@ -68,6 +73,8 @@ if (app.Environment.IsDevelopment())
     _ = app.UseSwagger();
     _ = app.UseSwaggerUI();
 }
+
+app.UseCors(myAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
