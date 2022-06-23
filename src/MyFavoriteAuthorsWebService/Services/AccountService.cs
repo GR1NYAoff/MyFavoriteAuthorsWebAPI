@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyFavoriteAuthorsWebService.Configuration;
 using MyFavoriteAuthorsWebService.Enum;
+using MyFavoriteAuthorsWebService.Helpers;
 using MyFavoriteAuthorsWebService.Interfaces;
 using MyFavoriteAuthorsWebService.Models;
 
@@ -17,19 +18,23 @@ namespace MyFavoriteAuthorsWebService.Services
         private readonly IOptions<AuthOptions> _options;
 
         public AccountService(IBaseRepository<Account> accountRepository,
-            ILogger<AccountService> logger)
+            ILogger<AccountService> logger, IOptions<AuthOptions> options)
         {
             _accountRepository = accountRepository;
             _logger = logger;
+            _options = options;
         }
 
-        public async Task<(StatusCode, string)> Login(Account user)
+        public async Task<(StatusCode, string)> Login(LoginRequest request)
         {
             try
             {
-                var account = await AuthenticateUser(user.Name, user.Password);
+                if (!await AccountExists(request.Name))
+                    return (StatusCode.Unauthorized, string.Empty);
 
-                if (user == null)
+                var account = await AuthenticateUser(request.Name, request.Password);
+
+                if (account == null)
                     return (StatusCode.Unauthorized, string.Empty);
 
                 var token = GenerateJWT(account);
@@ -44,14 +49,21 @@ namespace MyFavoriteAuthorsWebService.Services
             }
         }
 
-        public async Task<StatusCode> Register(Account user)
+        public async Task<StatusCode> Register(LoginRequest request)
         {
             try
             {
-                if (await AccountExists(user.Id, user.Name))
-                    return StatusCode.BadRequest;
+                if (await AccountExists(request.Name))
+                {
+                    _logger.LogWarning($"[Register]: An account with this username already exists");
 
-                _ = _accountRepository.Create(user);
+                    return StatusCode.BadRequest;
+                }
+
+                var hashed = HashPasswordHelper.HashPassword(request.Password);
+                var newUser = new Account(request.Name, hashed.Item1, hashed.Item2);
+
+                _ = _accountRepository.Create(newUser);
 
                 return StatusCode.OK;
             }
@@ -63,14 +75,20 @@ namespace MyFavoriteAuthorsWebService.Services
             }
         }
 
-        private Task<bool> AccountExists(Guid id, string name)
+        private Task<bool> AccountExists(string name)
         {
-            return _accountRepository.GetAll().AnyAsync(a => a.Id == id || a.Name == name);
+            return _accountRepository.GetAll().AnyAsync(a => a.Name == name);
         }
 
-        private Task<Account?> AuthenticateUser(string name, string password)
+        private async Task<Account?> AuthenticateUser(string name, string password)
         {
-            return _accountRepository.GetAll().SingleOrDefaultAsync(a => a.Name == name && a.Password == password);
+            var account = await _accountRepository.GetAll().FirstOrDefaultAsync(a => a.Name == name);
+            var hashed = HashPasswordHelper.HashPassword(password, account!.PasswordKey);
+
+            if (hashed.Item1 != account.Password)
+                return null;
+
+            return account;
         }
 
         private string GenerateJWT(Account user)
