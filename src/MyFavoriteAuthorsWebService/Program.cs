@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyFavoriteAuthorsWebService.Configuration;
 using MyFavoriteAuthorsWebService.Data;
-using MyFavoriteAuthorsWebService.Interfaces;
-using MyFavoriteAuthorsWebService.Services;
 using Swashbuckle.AspNetCore.Filters;
 
 const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -29,8 +27,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection"))
             );
-
-builder.Services.AddScoped<IAccountService, AccountService>();
 
 // Enable CORSE
 builder.Services.AddCors(options =>
