@@ -12,7 +12,7 @@ using MyFavoriteAuthorsWebService.Data;
 namespace MyFavoriteAuthorsWebService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220622213554_InitialCreate")]
+    [Migration("20220623093349_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,9 +38,9 @@ namespace MyFavoriteAuthorsWebService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordKey")
+                    b.Property<byte[]>("PasswordKey")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
