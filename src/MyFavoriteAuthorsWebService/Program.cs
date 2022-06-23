@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyFavoriteAuthorsWebService.Configuration;
 using MyFavoriteAuthorsWebService.Data;
+using MyFavoriteAuthorsWebService.Interfaces;
+using MyFavoriteAuthorsWebService.Models;
+using MyFavoriteAuthorsWebService.Repositories;
+using MyFavoriteAuthorsWebService.Services;
 using Swashbuckle.AspNetCore.Filters;
 
 const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +29,10 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection"))
             );
+
+// Add application services
+builder.Services.AddScoped<IBaseRepository<Account>, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // Enable CORSE
 builder.Services.AddCors(options =>
