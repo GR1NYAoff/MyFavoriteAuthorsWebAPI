@@ -18,14 +18,19 @@ namespace MyFavoriteAuthorsWebService.Models
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        public string PasswordKey { get; set; } = string.Empty;
+        public byte[]? PasswordKey { get; set; }
 
         [Required]
         public Role Role { get; set; }
 
-        public Account()
-        {
+        public Account() { }
 
+        public Account(string name, string password, byte[] passwordKey)
+        {
+            Name = name;
+            Password = password;
+            PasswordKey = passwordKey;
+            Role = Role.User;
         }
     }
 }
