@@ -5,9 +5,9 @@ namespace MyFavoriteAuthorsWebService.Interfaces
 {
     public interface IAccountService
     {
-        Task<StatusCode> Register(Account user);
+        Task<StatusCode> Register(LoginRequest request);
 
-        Task<(StatusCode, string)> Login(Account user);
+        Task<(StatusCode, string)> Login(LoginRequest request);
 
     }
 }
