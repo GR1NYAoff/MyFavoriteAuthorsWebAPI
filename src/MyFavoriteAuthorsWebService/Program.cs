@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyFavoriteAuthorsWebService.Configuration;
@@ -12,7 +15,15 @@ using Swashbuckle.AspNetCore.Filters;
 const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
+    options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions(JsonSerializerDefaults.Web)
+    {
+        ReferenceHandler = ReferenceHandler.Preserve,
+    }));
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -33,6 +44,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add application services
 builder.Services.AddScoped<IBaseRepository<Account>, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+
+builder.Services.AddScoped<IBaseRepository<Bookmark>, BookmarkRepository>();
+builder.Services.AddScoped<IBookmarkService, BookmarkService>();
+
+builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 // Enable CORSE
 builder.Services.AddCors(options =>
