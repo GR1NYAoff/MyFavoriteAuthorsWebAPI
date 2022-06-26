@@ -12,17 +12,20 @@ namespace MyFavoriteAuthorsWebService.Controllers
     public class BookmarkController : ControllerBase
     {
         private readonly IBookmarkService _bookmarkService;
+        private readonly IAuthorService _authorService;
         private string UserId => User.Claims
             .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-        public BookmarkController(IBookmarkService bookmarkService)
+        public BookmarkController(IBookmarkService bookmarkService,
+                                  IAuthorService authorService)
         {
             _bookmarkService = bookmarkService;
+            _authorService = authorService;
         }
 
         // GET: api/<BookmarkController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Bookmark>>> GetAvailableTests()
+        public async Task<ActionResult<IEnumerable<Bookmark>>> GetAvailableBookmarks()
         {
             if (!Guid.TryParse(UserId, out var userId))
                 return Unauthorized();
@@ -43,9 +46,22 @@ namespace MyFavoriteAuthorsWebService.Controllers
             return bookmark == null ? NotFound() : Ok(bookmark);
         }
 
+        // GET api/<BookmarkController>/1
+        [HttpGet("{bookmarkId}/books")]
+        public async Task<ActionResult<Book>> GetBookmarkBooks(int bookmarkId)
+        {
+            if (!Guid.TryParse(UserId, out var userId))
+                return Unauthorized();
+
+            var bookmark = await _bookmarkService.GetBookmark(bookmarkId, userId);
+            var books = await _authorService.GetBooks(bookmark!.AuthorKey);
+
+            return books == null ? NotFound() : Ok(books);
+        }
+
         // POST api/<BookmarkController>
         [HttpPost]
-        public async Task<ActionResult> PostBikeDetail([FromBody] BookmarkRequest request)
+        public async Task<ActionResult> PostBookmark([FromBody] BookmarkRequest request)
         {
             if (!Guid.TryParse(UserId, out var userId))
                 return Unauthorized();
@@ -61,7 +77,7 @@ namespace MyFavoriteAuthorsWebService.Controllers
 
         // PUT api/<BookmarkController>/2
         [HttpPut("{bookmarkId}")]
-        public async Task<IActionResult> PutBikeDetail(int bookmarkId, [FromBody] string comment)
+        public async Task<IActionResult> PutBookmark(int bookmarkId, [FromBody] string comment)
         {
             if (!Guid.TryParse(UserId, out var userId))
                 return Unauthorized();
@@ -74,7 +90,7 @@ namespace MyFavoriteAuthorsWebService.Controllers
 
         // DELETE api/<BookmarkController>/3
         [HttpDelete("{bookmarkId}")]
-        public async Task<IActionResult> DeleteBikeDetail(int bookmarkId)
+        public async Task<IActionResult> DeleteBookmark(int bookmarkId)
         {
             if (!Guid.TryParse(UserId, out var userId))
                 return Unauthorized();
