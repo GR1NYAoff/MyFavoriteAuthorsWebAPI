@@ -7,5 +7,6 @@ namespace MyFavoriteAuthorsWebService.Interfaces
     {
         public Task<List<Doc>?> GetValidAuthors(string authorName);
         public Task<List<Book>?> GetBooks(string authorKey);
+        public Task<List<BookmarkRequest>?> GetValidBookmarksRequests(string authorName);
     }
 }
