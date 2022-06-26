@@ -1,4 +1,5 @@
-﻿using MyFavoriteAuthorsWebService.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MyFavoriteAuthorsWebService.Data;
 using MyFavoriteAuthorsWebService.Interfaces;
 using MyFavoriteAuthorsWebService.Models;
 
@@ -27,7 +28,7 @@ namespace MyFavoriteAuthorsWebService.Repositories
 
         public IQueryable<Bookmark> GetAll()
         {
-            return _dbContext.Bookmarks;
+            return _dbContext.Bookmarks.Include(b => b.Account);
         }
 
         public async Task<Bookmark> Update(Bookmark entity)
