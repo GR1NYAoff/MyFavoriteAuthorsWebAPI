@@ -47,7 +47,7 @@ namespace MyFavoriteAuthorsWebService.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"[AuthorService.GetAuthors]: {ex.Message}");
+                _logger.LogError(ex, $"[AuthorService.GetValidAuthors]: {ex.Message}");
 
                 return null;
             }
@@ -108,5 +108,33 @@ namespace MyFavoriteAuthorsWebService.Services
 
         }
 
+        public async Task<List<BookmarkRequest>?> GetValidBookmarksRequests(string authorName)
+        {
+            try
+            {
+                var booksRequest = new List<BookmarkRequest>();
+                var validAuthors = await GetValidAuthors(authorName);
+
+                if (validAuthors == null)
+                    return booksRequest;
+
+                foreach (var author in validAuthors)
+                {
+                    if (string.IsNullOrEmpty(author.Name) || string.IsNullOrEmpty(author.Key))
+                        continue;
+
+                    booksRequest.Add(new BookmarkRequest(author.Name!, author.Key!));
+                }
+
+                return booksRequest;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"[AuthorService.GetValidBookmarksRequests]: {ex.Message}");
+
+                return new List<BookmarkRequest>();
+            }
+        }
     }
 }
