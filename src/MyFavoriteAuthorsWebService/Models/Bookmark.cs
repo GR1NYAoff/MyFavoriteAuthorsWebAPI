@@ -18,5 +18,16 @@ namespace MyFavoriteAuthorsWebService.Models
 
         public Guid AccountId { get; set; }
         public Account? Account { get; set; }
+
+        public Bookmark() { }
+
+        public Bookmark(string authorName, string authorKey,
+                        string comment, Guid accountId)
+        {
+            AuthorName = authorName;
+            AuthorKey = authorKey;
+            Comment = comment;
+            AccountId = accountId;
+        }
     }
 }
