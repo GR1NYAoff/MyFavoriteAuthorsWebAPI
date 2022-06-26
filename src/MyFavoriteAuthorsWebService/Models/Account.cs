@@ -23,8 +23,6 @@ namespace MyFavoriteAuthorsWebService.Models
         [Required]
         public Role Role { get; set; }
 
-        public List<Bookmark> Bookmarks { get; set; }
-
         public Account() { }
 
         public Account(string name, string password, byte[] passwordKey)

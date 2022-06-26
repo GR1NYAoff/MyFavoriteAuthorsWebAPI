@@ -45,7 +45,7 @@ namespace MyFavoriteAuthorsWebService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("MyFavoriteAuthorsWebService.Models.Bookmark", b =>
@@ -75,7 +75,7 @@ namespace MyFavoriteAuthorsWebService.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Bookmarks");
+                    b.ToTable("Bookmarks", (string)null);
                 });
 
             modelBuilder.Entity("MyFavoriteAuthorsWebService.Models.Bookmark", b =>
