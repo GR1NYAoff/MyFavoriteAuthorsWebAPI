@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFavoriteAuthorsWebService.Data;
 
@@ -11,9 +12,10 @@ using MyFavoriteAuthorsWebService.Data;
 namespace MyFavoriteAuthorsWebService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220626095534_CreateBookmarksTable")]
+    partial class CreateBookmarksTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,7 +47,7 @@ namespace MyFavoriteAuthorsWebService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Accounts", (string)null);
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("MyFavoriteAuthorsWebService.Models.Bookmark", b =>
@@ -75,7 +77,7 @@ namespace MyFavoriteAuthorsWebService.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Bookmarks", (string)null);
+                    b.ToTable("Bookmarks");
                 });
 
             modelBuilder.Entity("MyFavoriteAuthorsWebService.Models.Bookmark", b =>

@@ -11,6 +11,7 @@ namespace MyFavoriteAuthorsWebService.Data
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Bookmark> Bookmarks { get; set; }
 
     }
 }

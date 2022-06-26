@@ -63,7 +63,7 @@ namespace MyFavoriteAuthorsWebService.Services
                 var hashed = HashPasswordHelper.HashPassword(request.Password);
                 var newUser = new Account(request.Name, hashed.Item1, hashed.Item2);
 
-                _ = _accountRepository.Create(newUser);
+                await _accountRepository.Create(newUser);
 
                 return StatusCode.OK;
             }
@@ -100,9 +100,9 @@ namespace MyFavoriteAuthorsWebService.Services
 
             var claims = new List<Claim>()
             {
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Name, user.Name),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Role.ToString()),
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, user.Role.ToString())
             };
 
             var token = new JwtSecurityToken(authParams.Issuer,
