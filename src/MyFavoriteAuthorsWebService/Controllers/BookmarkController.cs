@@ -8,7 +8,7 @@ namespace MyFavoriteAuthorsWebService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin, User")]
     public class BookmarkController : ControllerBase
     {
         private readonly IBookmarkService _bookmarkService;
@@ -31,6 +31,18 @@ namespace MyFavoriteAuthorsWebService.Controllers
                 return Unauthorized();
 
             return Ok(await _bookmarkService.GetAvailableBookmarks(userId));
+
+        }
+
+        // GET: api/<BookmarkController>/all
+        [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<Bookmark>>> GetAllBookmarks()
+        {
+            if (!Guid.TryParse(UserId, out var userId))
+                return Unauthorized();
+
+            return Ok(await _bookmarkService.GetAllBookmarks());
 
         }
 
