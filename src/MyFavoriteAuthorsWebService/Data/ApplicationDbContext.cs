@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyFavoriteAuthorsWebService.Configuration;
 using MyFavoriteAuthorsWebService.Models;
 
 namespace MyFavoriteAuthorsWebService.Data
@@ -12,6 +13,12 @@ namespace MyFavoriteAuthorsWebService.Data
 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Bookmark> Bookmarks { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Seed Data for Accounts Table
+            _ = modelBuilder.ApplyConfiguration(new AccountsConfiguration());
+        }
 
     }
 }
