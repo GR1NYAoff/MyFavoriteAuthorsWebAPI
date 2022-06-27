@@ -46,7 +46,7 @@ namespace MyFavoriteAuthorsWebService.Controllers
             return bookmark == null ? NotFound() : Ok(bookmark);
         }
 
-        // GET api/<BookmarkController>/1
+        // GET api/<BookmarkController>/1/books
         [HttpGet("{bookmarkId}/books")]
         public async Task<ActionResult<Book>> GetBookmarkBooks(int bookmarkId)
         {
