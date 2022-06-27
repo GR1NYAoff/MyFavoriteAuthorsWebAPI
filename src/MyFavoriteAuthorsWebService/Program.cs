@@ -15,14 +15,7 @@ using Swashbuckle.AspNetCore.Filters;
 const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers(options =>
-{
-    options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
-    options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions(JsonSerializerDefaults.Web)
-    {
-        ReferenceHandler = ReferenceHandler.Preserve,
-    }));
-});
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
